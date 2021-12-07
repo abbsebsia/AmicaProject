@@ -1,0 +1,2 @@
+# AmicaProject
+Felix, Benja, Sebbe
