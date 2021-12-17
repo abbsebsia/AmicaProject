@@ -1,7 +1,8 @@
 <template>
   <q-page class="flex flex-center" id="page1">
     <div class="pageHolder">
-    <div id="Section2" class="Section">
+
+    <div id="Section3" class="Section">
         <h1 id="Tackh1">Tack för att du har röstat!</h1>
         <p id="Tackp">Här är lite interesant fakta om ditt färdmedel</p>
         <div class="TackData">
@@ -11,8 +12,15 @@
             <q-btn @click="nextData()" class="TD" id="TD2">
                 <p id="TD2T">Data 2</p>
             </q-btn>
-            </div>
         </div>
+    </div>
+
+    <div id="Section2" class="Section">
+        <h1 id="Slidertext">Du har <p id="SlidertextB">{{standard}}</p> km till skolan</h1>
+        <q-slider class="slider" v-model="standard" :min="0" :max="50" color="red"/>
+        <q-btn @click="nextSection()" id="startBTN">Next</q-btn>
+        </div>
+
         <div id="Section1" class="Section">
             <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
             <div class="choiceGrid">
@@ -30,6 +38,7 @@
                 </q-btn>
             </div>
         </div>
+        
         <div id="Section0" class="Section">
             <h1 id="AmicaTitle">AMICA</h1>
             <h1 id="Title0">Färdmedelsundersökning</h1>
@@ -50,6 +59,7 @@
 <script>
 import { event } from 'quasar';
 import { defineComponent } from 'vue';
+import { ref } from 'vue'
 
 export default defineComponent({
   name: 'PageIndex',
@@ -57,6 +67,7 @@ export default defineComponent({
     return{
       data_test: 1,
       section_test: 0,
+      standard: ref(2)
     }
   },
   methods:{
@@ -90,6 +101,12 @@ button, input[type="submit"], input[type="reset"] {
 	cursor: pointer;
 	outline: inherit;
 }
+.slider{
+    appearance: none;
+    width: 70%; /* Full-width */
+    height: 25px; /* Specified height */
+    outline: none; /* Remove outline */
+}
 
 body{
     background-color: none;
@@ -117,7 +134,7 @@ body{
 }
 #startBTN{
     position: relative;
-    top: -10%;
+    margin-top: 20%;
     width: 40%;
     height: 4%;
     background-color: #FF0010;
@@ -162,9 +179,10 @@ body{
     height: 50%;
 }
 
-#Section0, #Section1, #Section2{
+#Section0, #Section1, #Section2, #Section3, #Section4{
     grid-area: 1 / 1;
     /* transition: 0.9s cubic-bezier(.64,.02,.45,.99); */
+    transition: 0.4s ease-in-out
 }
 #Section1{
     z-index: 1;
@@ -176,6 +194,17 @@ body{
     /* display: none; */
     transition: 0.4s ease-in-out
 }
+#Section2{
+    z-index: 0;
+    /* display: none; */
+    transition: 0.4s ease-in-out
+}
+#Section3{
+    z-index: 0;
+    /* display: none; */
+    transition: 0.4s ease-in-out
+}
+
 
 .pageHolder{
     display: grid;
@@ -221,5 +250,16 @@ h1{
     overflow: hidden;
 }
 
-
+#Slidertext{
+    font-size: 200%;
+    position: relative;
+    top: -20%;
+    display: inline;
+}
+#SlidertextB{
+    font-size: 100%;
+    position: relative;
+    font-weight: 700;
+    display: inline;
+}
 </style>
