@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center" id="page1">
     <div class="pageHolder">
     <div id="Section2" class="Section">
         <h1 id="Tackh1">Tack för att du har röstat!</h1>
@@ -43,35 +43,32 @@
 </template>
 
 <script>
+import { event } from 'quasar';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'PageIndex',
   data(){
     return{
-      data: 1,
+      data_test: 1,
     }
   },
   methods:{
-    sleep(time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  },
   toS2(){
       document.querySelector("#Section1").style.opacity = "0";
   },
   toS2(){
-    // document.querySelector("#Section1").style.opacity = "0";
-    document.querySelector("#Section1").style.position = "absolute";
-    document.querySelector("#Section1").style.left = "-1000px";
-    sleep(5000).then(() => {
-        document.querySelector("#Section1").style.display = "none";
-  })
+    document.querySelector("#Section1").style.opacity = "0";
+    // document.querySelector("#Section1").style.position = "absolute";
+    // document.querySelector("#Section1").style.left = "-1000px";
+    document.querySelector("#Section1").style.pointerEvent = "none";
+  
   },
   nextData(){
-    console.log(data)
-    let s = "#TD" + data.toString()
+    console.log(this.data_test)
+    let s = "#TD" + this.data_test.toString()
     document.querySelector(s).style.display = "none";
-    this.data++
+    this.data_test++
   },
   }
 })
@@ -145,7 +142,7 @@ body{
 #Section1{
     z-index: 5;
     /* display: none; */
-    transition: 0.9s ease-in-out
+    transition: 0.4s ease-in-out
 }
 
 .pageHolder{
@@ -178,9 +175,15 @@ h1{
 }
 .TD{
     grid-area: 1 / 1;
+
 }
 #TD1{
     background-color: green;
     grid-area: 1 / 1;
 }
+#page1{
+    height: 100%;
+    overflow: hidden;
+}
+
 </style>
