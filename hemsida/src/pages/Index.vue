@@ -6,29 +6,34 @@
         <p id="Tackp">Här är lite interesant fakta om ditt färdmedel</p>
         <div class="TackData">
             <q-btn @click="nextData()" class="TD" id="TD1">
-                <p id="TD1T">Data1</p>
+                <p id="TD1T">Data 1</p>
             </q-btn>
             <q-btn @click="nextData()" class="TD" id="TD2">
-                <p id="TD2T">Data1</p>
+                <p id="TD2T">Data 2</p>
             </q-btn>
             </div>
         </div>
         <div id="Section1" class="Section">
             <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
             <div class="choiceGrid">
-                <q-btn @click="toS2()" class="choices" id="choice1">
+                <q-btn @click="nextSection()" class="choices" id="choice1">
                     <img src="../assets/Buss.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="toS2()" class="choices" id="choice2">
+                <q-btn @click="nextSection()" class="choices" id="choice2">
                     <img src="../assets/TåhBuss.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="toS2()" class="choices" id="choice3">
+                <q-btn @click="nextSection()" class="choices" id="choice3">
                     <img src="../assets/CykelGång.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="toS2()" class="choices" id="choice4">
+                <q-btn @click="nextSection()" class="choices" id="choice4">
                     <img src="../assets/Bil.svg" class="choiceIMG">
                 </q-btn>
             </div>
+        </div>
+        <div id="Section0" class="Section">
+            <h1 id="AmicaTitle">AMICA</h1>
+            <h1 id="Title0">Färdmedelsundersökning</h1>
+            <q-btn @click="nextSection()" id="startBTN">start</q-btn>
         </div>
     </div>
     <q-btn class="q-mt-xl"
@@ -51,23 +56,22 @@ export default defineComponent({
   data(){
     return{
       data_test: 1,
+      section_test: 0,
     }
   },
   methods:{
-  toS2(){
-      document.querySelector("#Section1").style.opacity = "0";
-  },
-  toS2(){
-    document.querySelector("#Section1").style.opacity = "0";
-    // document.querySelector("#Section1").style.position = "absolute";
-    // document.querySelector("#Section1").style.left = "-1000px";
-    document.querySelector("#Section1").style.pointerEvent = "none";
+  nextSection(){
+    let s = "#Section" + this.section_test.toString();
+    document.querySelector(s).style.opacity = "0";
+    document.querySelector(s).style.pointerEvents = "none";
+    this.section_test++
   
   },
   nextData(){
     console.log(this.data_test)
     let s = "#TD" + this.data_test.toString()
-    document.querySelector(s).style.display = "none";
+    document.querySelector(s).style.opacity = "0";
+    document.querySelector(s).style.pointerEvents = "none";
     this.data_test++
   },
   }
@@ -101,19 +105,42 @@ body{
     opacity: 1;
     background-color: white;
 }
+#Title0{
+    position: relative;
+    top: -20%;
+    font-size: 150%;
+}
+#AmicaTitle{
+    position: relative;
+    top: -20%;
+    font-size: 400%;
+}
+#startBTN{
+    position: relative;
+    top: -10%;
+    width: 40%;
+    height: 4%;
+    background-color: #FF0010;
+    color: white;
+    border-radius: 3vh;
+}
 #Title1{
     text-align: center;
     width: 80%; 
     font-size: 200%;
     font-weight: normal;
+    position: relative;
+    top: -10%;
 }
 .choiceGrid {
+    position: relative;
+    top: -10%;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: repeat(4, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    height: 70%;
+    height: 60%;
     width: 80%;
     align-items: center;
     justify-content: center;
@@ -135,12 +162,17 @@ body{
     height: 50%;
 }
 
-#Section1, #Section2{
+#Section0, #Section1, #Section2{
     grid-area: 1 / 1;
     /* transition: 0.9s cubic-bezier(.64,.02,.45,.99); */
 }
 #Section1{
-    z-index: 5;
+    z-index: 1;
+    /* display: none; */
+    transition: 0.4s ease-in-out
+}
+#Section0{
+    z-index: 2;
     /* display: none; */
     transition: 0.4s ease-in-out
 }
@@ -153,6 +185,7 @@ body{
     position: relative;
     text-align: center;
     width: 80%;
+    font-size: 300%;
 }
 
 
@@ -164,7 +197,7 @@ body{
 }
 .TackData{
     display: grid;
-    background-color: red;
+    background-color: none;
     width: 80%;
     height: 70%;
     align-items: center;
@@ -172,18 +205,21 @@ body{
 }
 h1{
     font-weight: normal;
+    line-height: 150%;
 }
 .TD{
     grid-area: 1 / 1;
-
+    background-color: #FF0010;
+    color: white;
+    text-align: center;
 }
 #TD1{
-    background-color: green;
     grid-area: 1 / 1;
 }
 #page1{
     height: 100%;
     overflow: hidden;
 }
+
 
 </style>

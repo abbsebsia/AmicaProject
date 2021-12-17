@@ -4,7 +4,7 @@
       <q-toolbar>
 
         <q-toolbar-title>
-          Amica
+          AMICA
         </q-toolbar-title>
 
         <div></div>
