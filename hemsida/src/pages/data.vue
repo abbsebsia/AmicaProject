@@ -1,54 +1,77 @@
 <template>
-  <q-page class="page"> 
-    <div>
-      <h3>{{stats}}</h3>
-    </div>
-    
-    <div>
-      <q-btn class="q-mt-xl" color="primary" text-color="white" elevated to="/" label="Home" no-caps></q-btn>
-    </div>
-    
-    
-  </q-page>
+<q-page>
+  <div>
+  <canvas id="myChart">
+
+  </canvas>
+  </div>
+</q-page>
+  
 </template>
 
 <script>
-import db from '../boot/firebase'
+
 
 export default {
-  name: 'data',
-  components: {
-   
-  },
   data(){
     return{
-      stats:''
+
     }
+  },
+  methods:{
+   chart(){
+     const Chart = require('chart.js');  
+     const ctx = document.getElementById('myChart');
+     const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+   }
   },
   mounted(){
-    var docRef = db.collection("data").doc("Ok3871TmHhrCHgy1Q4jj");
-
-docRef.get().then((doc) => {
-    if (doc.exists) {
-        this.stats = doc.data().test
-        console.log(this.stats)
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-    }
-}).catch((error) => {
-    console.log("Error getting document:", error);
-});
-  },
- 
- 
+    this.chart()
+  }
 }
 </script>
-<style scoped>
-.page{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+
+<style>
+#myChart{
+  background: rgb(212, 226, 212);
+  height: 400px;
+  width: 400px;
+  position: absolute;
+  left: 35%;
+  top: 10%;
 }
 </style>

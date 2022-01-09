@@ -18,22 +18,22 @@
     <div id="Section2" class="Section">
         <h1 id="Slidertext">Du har <p id="SlidertextB">{{standard}}</p> km till skolan</h1>
         <q-slider class="slider" v-model="standard" :min="0" :max="50" color="red"/>
-        <q-btn @click="nextSection()" id="startBTN">Next</q-btn>
+        <q-btn @click="nextSection('totalDistance')" id="startBTN">Next</q-btn>
         </div>
 
         <div id="Section1" class="Section">
             <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
             <div class="choiceGrid">
-                <q-btn @click="nextSection()" class="choices" id="choice1">
+                <q-btn @click="nextSection('buss')" class="choices" id="choice1">
                     <img src="../assets/Buss.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="nextSection()" class="choices" id="choice2">
+                <q-btn @click="nextSection('bussTrain')" class="choices" id="choice2">
                     <img src="../assets/TåhBuss.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="nextSection()" class="choices" id="choice3">
+                <q-btn @click="nextSection('cyckel')" class="choices" id="choice3">
                     <img src="../assets/CykelGång.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="nextSection()" class="choices" id="choice4">
+                <q-btn @click="nextSection('bil')" class="choices" id="choice4">
                     <img src="../assets/Bil.svg" class="choiceIMG">
                 </q-btn>
             </div>
@@ -60,6 +60,7 @@
 import { event } from 'quasar';
 import { defineComponent } from 'vue';
 import { ref } from 'vue'
+import db from '../boot/firebase'
 
 export default defineComponent({
   name: 'PageIndex',
@@ -71,11 +72,47 @@ export default defineComponent({
     }
   },
   methods:{
-  nextSection(){
+  nextSection(val){
     let s = "#Section" + this.section_test.toString();
     document.querySelector(s).style.opacity = "0";
     document.querySelector(s).style.pointerEvents = "none";
     this.section_test++
+    switch(val){
+        case 'buss':
+            this.$store.state.buss +=1
+            break;
+        case 'bussTrain':
+            this.$store.state.bussTrain +=1
+            break;
+        case 'cyckel':
+            this.$store.state.cyckel +=1
+            break;
+        case 'bil':
+            this.$store.state.bil +=1
+            break;
+        case 'totalDistance':
+            this.$store.state.totalDistance+= this.standard
+            db.collection("data").doc("CollectedData").set({
+            buss: this.$store.state.buss,
+            bussTrain: this.$store.state.bussTrain,
+            cyckel: this.$store.state.cyckel,
+            bil: this.$store.state.bil,
+            totalDistance: this.$store.state.totalDistance
+        })
+        .then(() => {
+            console.log("Document successfully written!");
+        })
+        .catch((error) => {
+            console.error("Error writing document: ", error);
+        });
+
+            break;
+    }
+        console.log("buss:",this.$store.state.buss)
+        console.log("bussTrain:",this.$store.state.bussTrain)
+        console.log("cyckel:",this.$store.state.cyckel)
+        console.log("bil:",this.$store.state.bil)
+        console.log("distance:",this.$store.state.totalDistance)
   
   },
   nextData(){
@@ -85,7 +122,8 @@ export default defineComponent({
     document.querySelector(s).style.pointerEvents = "none";
     this.data_test++
   },
-  }
+  },
+  
 })
 </script>
 
