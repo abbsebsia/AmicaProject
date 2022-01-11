@@ -17,7 +17,7 @@
 
     <div id="Section2" class="Section">
         <h1 id="Slidertext">Du har <p id="SlidertextB">{{standard}}</p> km till skolan</h1>
-        <q-slider class="slider" v-model="standard" :min="0" :max="50" color="red"/>
+        <q-slider class="slider" v-model="standard" :min="1" :max="50" color="red"/>
         <q-btn @click="nextSection('totalDistance')" id="startBTN">Next</q-btn>
         </div>
 
@@ -68,59 +68,77 @@ export default defineComponent({
     return{
       data_test: 1,
       section_test: 0,
-      standard: ref(2)
+      standard: ref(2),
+      koldioxid: 0,
+      cykel: 0,
+      gång:0,
+      fordon:"",
     }
   },
   methods:{
-  nextSection(val){
-    let s = "#Section" + this.section_test.toString();
+      nextSection(val){
+          if(val == "buss" || val == "cykel"|| val == "bussTrain"|| val == "bil"){
+              this.fordon = val.toString()
+              console.log(this.fordon)
+          }
+          let s = "#Section" + this.section_test.toString();
     document.querySelector(s).style.opacity = "0";
     document.querySelector(s).style.pointerEvents = "none";
     this.section_test++
-    switch(val){
-        case 'buss':
-            this.$store.state.buss +=1
+    console.log(this.section_test)
+    
+    if(this.section_test.toString() == 3){
+        console.log(this.fordon)
+        console.log("LETS GOO")
+        console.log(val)
+        switch (this.fordon) {
+            case "buss":
+                this.$store.state.buss += 1;
+                console.log(this.standard)
+                this.koldioxid += this.standard * 14
+                console.log(this.koldioxid)
             break;
-        case 'bussTrain':
-            this.$store.state.bussTrain +=1
+            case "bussTrain":
+                this.$store.state.bussTrain += 1;
+                this.koldioxid += (5 * 14) + (this.standard - 5)* 0.0039
             break;
-        case 'cyckel':
-            this.$store.state.cyckel +=1
+            case "cyckel":
+                this.$store.state.cyckel += 1;
+                this.cykel += this.standard * 30
+                this.gång += this.standard * 65
             break;
-        case 'bil':
-            this.$store.state.bil +=1
+            case "bil":
+                this.koldioxid += this.standard * 122    
             break;
-        case 'totalDistance':
-            this.$store.state.totalDistance+= this.standard
-            db.collection("data").doc("CollectedData").set({
-            buss: this.$store.state.buss,
-            bussTrain: this.$store.state.bussTrain,
-            cyckel: this.$store.state.cyckel,
-            bil: this.$store.state.bil,
-            totalDistance: this.$store.state.totalDistance
-        })
-        .then(() => {
-            console.log("Document successfully written!");
-        })
-        .catch((error) => {
-            console.error("Error writing document: ", error);
-        });
+      }
 
-            break;
+      this.$store.state.totalDistance += this.standard;
+            db.collection("data")
+                .doc("CollectedData")
+                .set({
+                    buss: this.$store.state.buss,
+                bussTrain: this.$store.state.bussTrain,
+                cyckel: this.$store.state.cyckel,
+                bil: this.$store.state.bil,
+                totalDistance: this.$store.state.totalDistance,
+                })
+                .then(() => {
+                    console.log("Document successfully written!");
+                })
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                });
     }
-        console.log("buss:",this.$store.state.buss)
-        console.log("bussTrain:",this.$store.state.bussTrain)
-        console.log("cyckel:",this.$store.state.cyckel)
-        console.log("bil:",this.$store.state.bil)
-        console.log("distance:",this.$store.state.totalDistance)
-  
   },
   nextData(){
-    console.log(this.data_test)
+      console.log(this.data_test)
     let s = "#TD" + this.data_test.toString()
     document.querySelector(s).style.opacity = "0";
     document.querySelector(s).style.pointerEvents = "none";
     this.data_test++
+    console.log("Koldioxid", this.koldioxid)
+    console.log("Cal Cykel", this.cykel)
+    console.log("Cal Gång", this.gång)
   },
   },
   
