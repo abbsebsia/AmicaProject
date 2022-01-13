@@ -1,9 +1,11 @@
 export default function () {
   return {
-    buss: 12313,
-    bussTrain:123,
-    cyckel:123,
-    bil: 123,
-    totalDistance:1
+    buss: 0,
+    bussTrain:0,
+    cykel:0,
+    bil: 0,
+    totalDistance:0,
+    totalCarbon:0,
+    totalAnswers:0
   }
 }

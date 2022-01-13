@@ -5,12 +5,11 @@
     <div id="Section3" class="Section">
         <h1 id="Tackh1">Tack för att du har röstat!</h1>
         <p id="Tackp">Här är lite interesant fakta om ditt färdmedel</p>
+        <p id="koldioxidp">Du har i snitt släppt ut: {{koldioxid}}g koldioxid</p>
+        <p id="calp">Du har i snitt förbrännt {{(cykel+gång)/2}} calorier</p>
         <div class="TackData">
-            <q-btn @click="nextData()" class="TD" id="TD1">
-                <p id="TD1T">Data 1</p>
-            </q-btn>
-            <q-btn @click="nextData()" class="TD" id="TD2">
-                <p id="TD2T">Data 2</p>
+            <q-btn to="/data" color="primary">
+                Insamlad data
             </q-btn>
         </div>
     </div>
@@ -30,7 +29,7 @@
                 <q-btn @click="nextSection('bussTrain')" class="choices" id="choice2">
                     <img src="../assets/TåhBuss.svg" class="choiceIMG">
                 </q-btn>
-                <q-btn @click="nextSection('cyckel')" class="choices" id="choice3">
+                <q-btn @click="nextSection('cykel')" class="choices" id="choice3">
                     <img src="../assets/CykelGång.svg" class="choiceIMG">
                 </q-btn>
                 <q-btn @click="nextSection('bil')" class="choices" id="choice4">
@@ -45,14 +44,6 @@
             <q-btn @click="nextSection()" id="startBTN">start</q-btn>
         </div>
     </div>
-    <q-btn class="q-mt-xl"
-        color="primary"
-        text-color="white"
-        unelevated
-        to="/data"
-        label="Data"
-        no-caps
-    ></q-btn>
   </q-page>
 </template>
 
@@ -102,25 +93,29 @@ export default defineComponent({
                 this.$store.state.bussTrain += 1;
                 this.koldioxid += (5 * 14) + (this.standard - 5)* 0.0039
             break;
-            case "cyckel":
-                this.$store.state.cyckel += 1;
+            case "cykel":
+                this.$store.state.cykel += 1;
                 this.cykel += this.standard * 30
                 this.gång += this.standard * 65
             break;
             case "bil":
-                this.koldioxid += this.standard * 122    
+                this.koldioxid += this.standard * 122
+                this.$store.state.bil += 1;  
             break;
       }
-
+      this.$store.state.totalCarbon += this.koldioxid  
       this.$store.state.totalDistance += this.standard;
-            db.collection("data")
+            db.collection("amica")
                 .doc("CollectedData")
                 .set({
-                    buss: this.$store.state.buss,
+                buss: this.$store.state.buss,
                 bussTrain: this.$store.state.bussTrain,
-                cyckel: this.$store.state.cyckel,
+                cykel: this.$store.state.cykel,
                 bil: this.$store.state.bil,
                 totalDistance: this.$store.state.totalDistance,
+                totalCarbon: this.$store.state.totalCarbon,
+                totalAnswers: this.$store.state.totalAnswers + 1
+
                 })
                 .then(() => {
                     console.log("Document successfully written!");
@@ -278,7 +273,7 @@ body{
     position: relative;
     text-align: center;
     width: 86%;
-    font-size: small;
+    font-size: 1.5em;
 }
 .TackData{
     display: grid;
@@ -318,4 +313,5 @@ h1{
     font-weight: 700;
     display: inline;
 }
+
 </style>
