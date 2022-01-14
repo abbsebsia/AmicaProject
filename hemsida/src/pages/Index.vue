@@ -4,9 +4,31 @@
 
     <div id="Section3" class="Section">
         <h1 id="Tackh1">Tack för att du har röstat!</h1>
-        <p id="Tackp">Här är lite interesant fakta om ditt färdmedel</p>
-        <p id="koldioxidp">Du har i snitt släppt ut: {{koldioxid}}g koldioxid</p>
-        <p id="calp">Du har i snitt förbrännt {{(cykel+gång)/2}} calorier</p>
+        <div v-if="koldioxid" class="CalKolOuter">
+            <div class="CalKol">
+                <p id="calp">På ett år kommer du att släppa ut <b>{{Math.round((koldioxid*253)/1000)}}</b> kg koldioxid</p>
+            </div>
+        </div>
+        <div v-if="koldioxid" class="CalKolOuter2">
+            <div v-if="fordon == 'bil'" class="CalKol2">
+                <p id="koldioxidp2">Detta är 870% mer koldioxid än om du hade åkt buss</p>
+        </div>  
+            <div v-if="fordon == 'buss'" class="CalKol2">
+                <p id="koldioxidp2">Om du hade åkt bil hade du släppt ut 870% mer koldioxid</p>
+            </div>
+        </div>
+    
+
+        <div v-if="gång" class="CalKolOuter">
+            <div class="CalKol">
+                <p id="calp">Idag bränner du <b>{{(cykel)}}</b> kcal</p>
+            </div>
+        </div>
+        <div v-if="gång" class="CalKolOuter">
+            <div class="CalKol">
+                <p id="calp">Om du cyklar hela året så kommer du att bränna <b>{{(cykel)*253}}</b> kcal</p>
+            </div>
+        </div>
         <div class="TackData">
             <q-btn to="/data" color="primary">
                 Insamlad data
@@ -21,7 +43,7 @@
         </div>
 
         <div id="Section1" class="Section">
-            <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
+            <h1 id="Title1">Hur tar du dig till skolan idag?</h1>
             <div class="choiceGrid">
                 <q-btn @click="nextSection('buss')" class="choices" id="choice1">
                     <img src="../assets/Buss.svg" class="choiceIMG">
@@ -86,20 +108,20 @@ export default defineComponent({
             case "buss":
                 this.$store.state.buss += 1;
                 console.log(this.standard)
-                this.koldioxid += this.standard * 14
+                this.koldioxid += this.standard * 14 * 2
                 console.log(this.koldioxid)
             break;
             case "bussTrain":
                 this.$store.state.bussTrain += 1;
-                this.koldioxid += (5 * 14) + (this.standard - 5)* 0.0039
+                this.koldioxid += (5 * 14) + (this.standard - 5)* 0.0039 * 2
             break;
             case "cykel":
                 this.$store.state.cykel += 1;
-                this.cykel += this.standard * 30
-                this.gång += this.standard * 65
+                this.cykel += this.standard * 30 * 2
+                this.gång += this.standard * 65 * 2
             break;
             case "bil":
-                this.koldioxid += this.standard * 122
+                this.koldioxid += this.standard * 122 * 2
                 this.$store.state.bil += 1;  
             break;
       }
@@ -313,5 +335,44 @@ h1{
     font-weight: 700;
     display: inline;
 }
-
+.CalKolOuter{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 85%;
+    margin-top: 2%;
+    background-color: #FF0010;
+    border-radius: 20px;
+}
+.CalKol{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: left;
+    width: 90%;
+    padding-top: 5%;
+    color: white;
+    font-size: 16px;
+}
+.CalKolOuter2{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 85%;
+    margin-top: 2%;
+    background-color: white;
+    border-radius: 20px;
+}
+.CalKol2{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-align: left;
+    width: 90%;
+    padding-top: 5%;
+    color: black;
+    font-size: 16px;
+}
 </style>
