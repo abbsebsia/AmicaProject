@@ -2,7 +2,7 @@
   <q-page class="flex flex-center" id="page1">
     <div class="pageHolder">
       <div id="Section3" class="Section">
-        <h1 id="Tackh1">Tack för att du har röstat!</h1>
+        <h1 id="Tackh1">Tack för att du har svarat!</h1>
         <div v-if="koldioxid" class="CalKolOuter">
           <div class="CalKol">
             <p id="calp">
@@ -40,7 +40,7 @@
           </div>
         </div>
         <div class="TackData">
-          <q-btn to="/data" color="primary"> Insamlad data </q-btn>
+          <q-btn to="/data" id="dataBtn"> Insamlad data </q-btn>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
           class="slider"
           v-model="standard"
           :min="1"
-          :max="50"
+          :max="70"
           color="red"
         />
         <q-btn @click="nextSection('totalDistance')" id="startBTN">Next</q-btn>
@@ -88,7 +88,8 @@
 </template>
 
 <script>
-import { event } from "quasar";
+import { computed } from "vue";
+import { useStore } from "vuex";
 import { defineComponent } from "vue";
 import { ref } from "vue";
 import db from "../boot/firebase";
@@ -105,6 +106,61 @@ export default defineComponent({
       fordon: "",
     };
   },
+  setup() {
+    const $store = useStore();
+
+    const bil = computed({
+      get: () => $store.state.example.bil,
+      set: (val) => {
+        $store.commit("example/bil", val);
+      },
+    });
+    const buss = computed({
+      get: () => $store.state.example.buss,
+      set: (val) => {
+        $store.commit("example/buss", val);
+      },
+    });
+    const bussTrain = computed({
+      get: () => $store.state.example.bussTrain,
+      set: (val) => {
+        $store.commit("example/bussTrain", val);
+      },
+    });
+    const storeCykel = computed({
+      get: () => $store.state.example.cykel,
+      set: (val) => {
+        $store.commit("example/cykel", val);
+      },
+    });
+    const totalAnswers = computed({
+      get: () => $store.state.example.totalAnswers,
+      set: (val) => {
+        $store.commit("example/totalAnswers", val);
+      },
+    });
+    const totalCarbon = computed({
+      get: () => $store.state.example.totalCarbon,
+      set: (val) => {
+        $store.commit("example/totalCarbon", val);
+      },
+    });
+    const totalDistance = computed({
+      get: () => $store.state.example.totalDistance,
+      set: (val) => {
+        $store.commit("example/totalDistance", val);
+      },
+    });
+    return {
+      bil,
+      buss,
+      bussTrain,
+      storeCykel,
+      totalAnswers,
+      totalCarbon,
+      totalDistance,
+    };
+  },
   methods: {
     nextSection(val) {
       if (
@@ -114,13 +170,13 @@ export default defineComponent({
         val == "bil"
       ) {
         this.fordon = val.toString();
-        console.log(this.fordon);
+        // console.log(this.fordon);
       }
       let s = "#Section" + this.section_test.toString();
       document.querySelector(s).style.opacity = "0";
       document.querySelector(s).style.pointerEvents = "none";
       this.section_test++;
-      console.log(this.section_test);
+      // console.log(this.section_test);
 
       if (this.section_test.toString() == 3) {
         console.log(this.fordon);
@@ -128,37 +184,38 @@ export default defineComponent({
         console.log(val);
         switch (this.fordon) {
           case "buss":
-            this.$store.state.buss += 1;
-            console.log(this.standard);
+            this.buss += 1;
+            // console.log(this.standard);
             this.koldioxid += this.standard * 14 * 2;
             console.log(this.koldioxid);
             break;
           case "bussTrain":
-            this.$store.state.bussTrain += 1;
+            this.bussTrain += 1;
             this.koldioxid += 5 * 14 + (this.standard - 5) * 0.0039 * 2;
             break;
           case "cykel":
-            this.$store.state.cykel += 1;
+            this.storeCykel += 1;
             this.cykel += this.standard * 30 * 2;
             this.gång += this.standard * 65 * 2;
             break;
           case "bil":
             this.koldioxid += this.standard * 122 * 2;
-            this.$store.state.bil += 1;
+            this.bil += 1;
             break;
         }
-        this.$store.state.totalCarbon += this.koldioxid;
-        this.$store.state.totalDistance += this.standard;
+        this.totalAnswers += 1;
+        this.totalCarbon += this.koldioxid;
+        this.totalDistance += this.standard;
         db.collection("amica")
           .doc("CollectedData")
           .set({
-            buss: this.$store.state.buss,
-            bussTrain: this.$store.state.bussTrain,
-            cykel: this.$store.state.cykel,
-            bil: this.$store.state.bil,
-            totalDistance: this.$store.state.totalDistance,
-            totalCarbon: this.$store.state.totalCarbon,
-            totalAnswers: this.$store.state.totalAnswers + 1,
+            buss: this.buss,
+            bussTrain: this.bussTrain,
+            cykel: this.cykel,
+            bil: this.bil,
+            totalDistance: this.totalDistance,
+            totalCarbon: this.totalCarbon,
+            totalAnswers: this.totalAnswers,
           })
           .then(() => {
             console.log("Document successfully written!");
@@ -376,7 +433,7 @@ h1 {
   align-content: center;
   width: 85%;
   margin-top: 2%;
-  background-color: white;
+  background-color: #ff0010;
   border-radius: 20px;
 }
 .CalKol2 {
@@ -387,7 +444,12 @@ h1 {
   text-align: left;
   width: 90%;
   padding-top: 5%;
-  color: black;
+  color: white;
   font-size: 16px;
+}
+#dataBtn {
+  background-color: #ff0010;
+  color: white;
+  border-radius: 20px;
 }
 </style>
