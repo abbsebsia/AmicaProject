@@ -17,6 +17,7 @@
 import db from "../boot/firebase";
 import { computed } from "vue";
 import { useStore } from "vuex";
+import Auth from "../boot/firebase";
 
 export default {
   name: "MainLayout",
@@ -90,13 +91,13 @@ export default {
             this.totalDistance = doc.data().totalDistance;
             this.totalCarbon = doc.data().totalCarbon;
             this.totalAnswers = doc.data().totalAnswers;
-            console.log("buss:", this.buss);
-            console.log("bussTrain:", this.bussTrain);
-            console.log("cykel:", this.storeCykel);
-            console.log("bil:", this.bil);
-            console.log("distance:", this.totalDistance);
-            console.log("totalCarbon:", this.totalCarbon);
-            console.log("Answers:", this.totalAnswers);
+            // console.log("buss:", this.buss);
+            // console.log("bussTrain:", this.bussTrain);
+            // console.log("cykel:", this.storeCykel);
+            // console.log("bil:", this.bil);
+            // console.log("distance:", this.totalDistance);
+            // console.log("totalCarbon:", this.totalCarbon);
+            // console.log("Answers:", this.totalAnswers);
           } else {
             console.log("No such document!");
           }
@@ -108,6 +109,17 @@ export default {
   },
   mounted() {
     this.getData();
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {
+        // Signed in..
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+      });
   },
 };
 </script>

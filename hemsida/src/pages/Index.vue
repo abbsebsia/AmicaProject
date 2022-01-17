@@ -179,9 +179,9 @@ export default defineComponent({
       // console.log(this.section_test);
 
       if (this.section_test.toString() == 3) {
-        console.log(this.fordon);
-        console.log("LETS GOO");
-        console.log(val);
+        // console.log(this.fordon);
+        // console.log("LETS GOO");
+        // console.log(val);
         switch (this.fordon) {
           case "buss":
             this.buss += 1;
@@ -231,9 +231,9 @@ export default defineComponent({
       document.querySelector(s).style.opacity = "0";
       document.querySelector(s).style.pointerEvents = "none";
       this.data_test++;
-      console.log("Koldioxid", this.koldioxid);
-      console.log("Cal Cykel", this.cykel);
-      console.log("Cal Gång", this.gång);
+      // console.log("Koldioxid", this.koldioxid);
+      // console.log("Cal Cykel", this.cykel);
+      // console.log("Cal Gång", this.gång);
     },
   },
 });
