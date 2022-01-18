@@ -17,7 +17,8 @@
 import db from "../boot/firebase";
 import { computed } from "vue";
 import { useStore } from "vuex";
-import Auth from "../boot/firebase";
+import firebase from "firebase/app";
+import auth from "firebase/auth";
 
 export default {
   name: "MainLayout",
@@ -67,6 +68,18 @@ export default {
         $store.commit("example/totalDistance", val);
       },
     });
+    const uid = computed({
+      get: () => $store.state.example.uid,
+      set: (val) => {
+        $store.commit("example/uid", val);
+      },
+    });
+    const done = computed({
+      get: () => $store.state.example.done,
+      set: (val) => {
+        $store.commit("example/done", val);
+      },
+    });
     return {
       bil,
       buss,
@@ -75,9 +88,46 @@ export default {
       totalAnswers,
       totalCarbon,
       totalDistance,
+      uid,
+      done,
     };
   },
   methods: {
+    closeApp() {
+      console.log("app is closing");
+    },
+    async checkUser() {
+      var docRef = db.collection("users").doc(this.uid);
+      await docRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            // console.log(doc.data());
+            if (doc.data().done == true) {
+              console.log("closing apppp");
+              this.done = true;
+            } else {
+              this.getData();
+            }
+          } else {
+            console.log("no such document, creating new");
+            db.collection("users")
+              .doc(this.uid)
+              .set({
+                done: false,
+              })
+              .then(() => {
+                console.log("Document successfully written!");
+              })
+              .catch((error) => {
+                console.error("Error writing document: ", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    },
     async getData() {
       var docRef = db.collection("amica").doc("CollectedData");
       await docRef
@@ -98,6 +148,7 @@ export default {
             // console.log("distance:", this.totalDistance);
             // console.log("totalCarbon:", this.totalCarbon);
             // console.log("Answers:", this.totalAnswers);
+            console.log("getting data...");
           } else {
             console.log("No such document!");
           }
@@ -107,19 +158,16 @@ export default {
         });
     },
   },
-  mounted() {
-    this.getData();
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(() => {
-        // Signed in..
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ...
-      });
+  beforeCreate() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.uid = user.uid;
+        this.checkUser();
+      } else {
+        console.log("signed out");
+      }
+    });
   },
+  mounted() {},
 };
 </script>

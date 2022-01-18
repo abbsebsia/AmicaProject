@@ -24,3 +24,9 @@ export const totalDistance = (state, value) => {
 export const totalAnswers = (state, value) => {
   state.totalAnswers = value;
 };
+export const uid = (state, value) => {
+  state.uid = value;
+};
+export const done = (state, value) => {
+  state.done = value;
+};

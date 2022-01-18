@@ -61,7 +61,7 @@
       </div>
 
       <div id="Section1" class="Section">
-        <h1 id="Title1">Hur tar du dig till skolan idag?</h1>
+        <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
         <div class="choiceGrid">
           <q-btn @click="nextSection('buss')" class="choices" id="choice1">
             <img src="../assets/Buss.svg" class="choiceIMG" />
@@ -151,6 +151,13 @@ export default defineComponent({
         $store.commit("example/totalDistance", val);
       },
     });
+    const uid = computed({
+      get: () => $store.state.example.uid,
+      set: (val) => {
+        $store.commit("example/uid", val);
+      },
+    });
+
     return {
       bil,
       buss,
@@ -159,6 +166,7 @@ export default defineComponent({
       totalAnswers,
       totalCarbon,
       totalDistance,
+      uid,
     };
   },
   methods: {
@@ -219,6 +227,17 @@ export default defineComponent({
           })
           .then(() => {
             console.log("Document successfully written!");
+          })
+          .catch((error) => {
+            console.error("Error writing document: ", error);
+          });
+        db.collection("users")
+          .doc(this.uid)
+          .set({
+            done: true,
+          })
+          .then(() => {
+            console.log("User answered");
           })
           .catch((error) => {
             console.error("Error writing document: ", error);

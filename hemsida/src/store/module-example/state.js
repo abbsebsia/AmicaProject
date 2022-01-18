@@ -8,5 +8,7 @@ export default function () {
     totalCarbon: 0,
     totalAnswers: 0,
     drawerState: false,
+    uid: "",
+    done: false,
   };
 }
