@@ -10,5 +10,6 @@ export default function () {
     drawerState: false,
     uid: "",
     done: false,
+    allData: [],
   };
 }

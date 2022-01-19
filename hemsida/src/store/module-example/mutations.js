@@ -13,7 +13,7 @@ export const bussTrain = (state, value) => {
   state.bussTrain = value;
 };
 export const cykel = (state, value) => {
-  state.cyekl = value;
+  state.cykel = value;
 };
 export const totalCarbon = (state, value) => {
   state.totalCarbon = value;
@@ -29,4 +29,7 @@ export const uid = (state, value) => {
 };
 export const done = (state, value) => {
   state.done = value;
+};
+export const allData = (state, value) => {
+  state.allData = value;
 };

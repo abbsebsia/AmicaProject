@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import db from "../boot/firebase";
+import db from "src/boot/firebase";
 import { computed } from "vue";
 import { useStore } from "vuex";
 import firebase from "firebase/app";
@@ -80,6 +80,12 @@ export default {
         $store.commit("example/done", val);
       },
     });
+    const allData = computed({
+      get: () => $store.state.example.allData,
+      set: (val) => {
+        $store.commit("example/allData", val);
+      },
+    });
     return {
       bil,
       buss,
@@ -90,12 +96,10 @@ export default {
       totalDistance,
       uid,
       done,
+      allData,
     };
   },
   methods: {
-    closeApp() {
-      console.log("app is closing");
-    },
     async checkUser() {
       var docRef = db.collection("users").doc(this.uid);
       await docRef
@@ -104,7 +108,7 @@ export default {
           if (doc.exists) {
             // console.log(doc.data());
             if (doc.data().done == true) {
-              console.log("closing apppp");
+              // console.log("closing apppp");
               this.done = true;
             } else {
               this.getData();
@@ -122,6 +126,7 @@ export default {
               .catch((error) => {
                 console.error("Error writing document: ", error);
               });
+            this.getData();
           }
         })
         .catch((error) => {
@@ -141,6 +146,7 @@ export default {
             this.totalDistance = doc.data().totalDistance;
             this.totalCarbon = doc.data().totalCarbon;
             this.totalAnswers = doc.data().totalAnswers;
+            this.allData = doc.data().listData;
             // console.log("buss:", this.buss);
             // console.log("bussTrain:", this.bussTrain);
             // console.log("cykel:", this.storeCykel);
@@ -148,7 +154,7 @@ export default {
             // console.log("distance:", this.totalDistance);
             // console.log("totalCarbon:", this.totalCarbon);
             // console.log("Answers:", this.totalAnswers);
-            console.log("getting data...");
+            // console.log("alldata: ", this.allData);
           } else {
             console.log("No such document!");
           }

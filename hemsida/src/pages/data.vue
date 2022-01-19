@@ -11,7 +11,7 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import DataVisualisering from "../components/DataVisualisering.vue";
+import DataVisualisering from "src/components/DataVisualisering.vue";
 export default {
   components: {
     DataVisualisering,

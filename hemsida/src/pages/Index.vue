@@ -64,16 +64,16 @@
         <h1 id="Title1">Hur tog du dig till skolan idag?</h1>
         <div class="choiceGrid">
           <q-btn @click="nextSection('buss')" class="choices" id="choice1">
-            <img src="../assets/Buss.svg" class="choiceIMG" />
+            <img src="~assets/Buss.svg" class="choiceIMG" />
           </q-btn>
           <q-btn @click="nextSection('bussTrain')" class="choices" id="choice2">
-            <img src="../assets/TåhBuss.svg" class="choiceIMG" />
+            <img src="~assets/TåhBuss.svg" class="choiceIMG" />
           </q-btn>
           <q-btn @click="nextSection('cykel')" class="choices" id="choice3">
-            <img src="../assets/CykelGång.svg" class="choiceIMG" />
+            <img src="~assets/CykelGång.svg" class="choiceIMG" />
           </q-btn>
           <q-btn @click="nextSection('bil')" class="choices" id="choice4">
-            <img src="../assets/Bil.svg" class="choiceIMG" />
+            <img src="~assets/Bil.svg" class="choiceIMG" />
           </q-btn>
         </div>
       </div>
@@ -81,7 +81,12 @@
       <div id="Section0" class="Section">
         <h1 id="AmicaTitle">AMICA</h1>
         <h1 id="Title0">Färdmedelsundersökning</h1>
-        <q-btn @click="nextSection()" id="startBTN">start</q-btn>
+        <q-btn
+          @click="nextSection()"
+          id="startBTN"
+          :to="this.done ? '/tack' : ''"
+          >start</q-btn
+        >
       </div>
     </div>
   </q-page>
@@ -92,7 +97,7 @@ import { computed } from "vue";
 import { useStore } from "vuex";
 import { defineComponent } from "vue";
 import { ref } from "vue";
-import db from "../boot/firebase";
+import db from "src/boot/firebase";
 export default defineComponent({
   name: "PageIndex",
   data() {
@@ -157,6 +162,18 @@ export default defineComponent({
         $store.commit("example/uid", val);
       },
     });
+    const done = computed({
+      get: () => $store.state.example.done,
+      set: (val) => {
+        $store.commit("example/done", val);
+      },
+    });
+    const allData = computed({
+      get: () => $store.state.example.allData,
+      set: (val) => {
+        $store.commit("example/allData", val);
+      },
+    });
 
     return {
       bil,
@@ -167,10 +184,16 @@ export default defineComponent({
       totalCarbon,
       totalDistance,
       uid,
+      done,
+      allData,
     };
   },
   methods: {
     nextSection(val) {
+      if (this.done) {
+        console.log("redirecting");
+        this.$refs("");
+      }
       if (
         val == "buss" ||
         val == "cykel" ||
@@ -190,40 +213,68 @@ export default defineComponent({
         // console.log(this.fordon);
         // console.log("LETS GOO");
         // console.log(val);
+        this.totalAnswers += 1;
         switch (this.fordon) {
           case "buss":
             this.buss += 1;
             // console.log(this.standard);
-            this.koldioxid += this.standard * 14 * 2;
-            console.log(this.koldioxid);
+            this.koldioxid += Math.round(this.standard * 14 * 2);
+            // console.log(this.koldioxid);
+            this.allData.push({
+              fordon: 3,
+              distance: this.standard,
+              carbon: this.koldioxid,
+              calories: 0,
+            });
             break;
           case "bussTrain":
             this.bussTrain += 1;
-            this.koldioxid += 5 * 14 + (this.standard - 5) * 0.0039 * 2;
+            this.koldioxid += Math.round(
+              5 * 14 + (this.standard - 5) * 0.0039 * 2
+            );
+            this.allData.push({
+              fordon: 2,
+              distance: this.standard,
+              carbon: this.koldioxid,
+              calories: 0,
+            });
             break;
           case "cykel":
             this.storeCykel += 1;
-            this.cykel += this.standard * 30 * 2;
-            this.gång += this.standard * 65 * 2;
+            this.cykel += Math.round(this.standard * 30 * 2);
+            this.gång += Math.round(this.standard * 65 * 2);
+            this.allData.push({
+              fordon: 4,
+              distance: this.standard,
+              calories: Math.round((this.cykel + this.gång) / 2),
+              carbon: 0,
+            });
             break;
           case "bil":
-            this.koldioxid += this.standard * 122 * 2;
+            this.koldioxid += Math.round(this.standard * 122);
             this.bil += 1;
+            this.allData.push({
+              fordon: 1,
+              distance: this.standard,
+              carbon: this.koldioxid,
+              calories: 0,
+            });
             break;
         }
-        this.totalAnswers += 1;
-        this.totalCarbon += this.koldioxid;
+
+        this.totalCarbon += Math.round(this.koldioxid);
         this.totalDistance += this.standard;
         db.collection("amica")
           .doc("CollectedData")
           .set({
             buss: this.buss,
             bussTrain: this.bussTrain,
-            cykel: this.cykel,
+            cykel: this.storeCykel,
             bil: this.bil,
             totalDistance: this.totalDistance,
             totalCarbon: this.totalCarbon,
             totalAnswers: this.totalAnswers,
+            listData: this.allData,
           })
           .then(() => {
             console.log("Document successfully written!");

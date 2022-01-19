@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
-import auth from "firebase/auth";
+// import auth from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -15,15 +15,15 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-firebase
-  .auth()
-  .signInAnonymously()
-  .then((user) => {
-    console.log("signed in", user);
-  })
-  .catch((error) => {
-    console.log(error.message);
-  });
+// firebase
+//   .auth()
+//   .signInAnonymously()
+//   .then((user) => {
+//     console.log("signed in", user);
+//   })
+//   .catch((error) => {
+//     console.log(error.message);
+//   });
 
 let db = firebase.firestore();
 
